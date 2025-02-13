@@ -46,11 +46,22 @@ def main(page: ft.Page):
     
     def check_typing(e):
         nonlocal mistakes
+        typed_text = e.control.value
 
         if start_time[0] is None:
             start_time[0] = time.time()
-    
-        typed_char = e.control.value[-1] if e.control.value else " "
+
+        if len(typed_text) < current_index[0]:  
+            current_index[0] = len(typed_text)
+            update_display()
+            return
+
+        typed_char = typed_text[-1] if typed_text else " "
+
+        if len(typed_text) <= current_index[0]:
+            update_display()
+            return
+
         if typed_char == words_text[current_index[0]]:
             current_index[0] += 1
             if current_index[0] >= len(words_text):
