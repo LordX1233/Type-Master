@@ -25,6 +25,8 @@ def main(page: ft.Page):
     start_time = [None]
     status_text = ft.Text("", size=20, color=ft.colors.BLUE)
     current_index = [0]
+    mistakes = 0
+    mistake_text = ft.Text("Mistakes: " + str(mistakes), size=20, color=ft.colors.BLUE)
     
     display_text = ft.Row(wrap=True, spacing=5)
 
@@ -43,9 +45,12 @@ def main(page: ft.Page):
     update_display()
     
     def check_typing(e):
+        nonlocal mistakes
+
         if start_time[0] is None:
             start_time[0] = time.time()
-        typed_char = e.control.value[-1] if e.control.value else ""
+    
+        typed_char = e.control.value[-1] if e.control.value else " "
         if typed_char == words_text[current_index[0]]:
             current_index[0] += 1
             if current_index[0] >= len(words_text):
@@ -53,15 +58,23 @@ def main(page: ft.Page):
                 status_text.value = f"Completed in {elapsed_time} seconds"
                 page.update()
             update_display()
+        else:
+            mistakes += 1
+            print(typed_char)
+            mistake_text.value = "Mistakes: " + str(mistakes)
+            page.update()
+            update_display()
     
     def restart_test(e):
-        nonlocal words, words_text
+        nonlocal words, words_text, mistakes
         words = fetch_word_list()
         words_text = " ".join(words)
         current_index[0] = 0
         status_text.value = ""
         start_time[0] = None
         input_field.value = ""
+        mistakes = 0
+        mistake_text.value = "Mistakes: " + str(mistakes)
         update_display()
     
     input_field = ft.TextField(
@@ -82,6 +95,7 @@ def main(page: ft.Page):
                 ft.Container(content=display_text, width=650),
                 input_field,
                 status_text,
+                mistake_text,
                 ft.Row([
                     ft.TextButton(text="Try Again", icon=ft.icons.CACHED_SHARP, on_click=restart_test)
                 ], alignment=ft.MainAxisAlignment.CENTER)
