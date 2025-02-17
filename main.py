@@ -13,7 +13,7 @@ def fetch_word_list():
 def main(page: ft.Page):
     page.title = 'Type Master'
     page.window.width = 700
-    page.window.height = 600
+    page.window.height = 630
     page.window.resizable = False
     page.theme = ft.Theme(color_scheme_seed=ft.colors.YELLOW_300)
     page.theme_mode = ft.ThemeMode.LIGHT
@@ -67,6 +67,8 @@ def main(page: ft.Page):
             if current_index[0] >= len(words_text):
                 elapsed_time = round(time.time() - start_time[0], 2)
                 status_text.value = f"Completed in {elapsed_time} seconds"
+                title.value = f"Words per minute: {round(25/(elapsed_time/60),2)}  Accuracy: {round(((len(words_text)-mistakes)/len(words_text))*100,2)}%" 
+                title.size=25
                 page.update()
             update_display()
         else:
@@ -86,6 +88,8 @@ def main(page: ft.Page):
         input_field.value = ""
         mistakes = 0
         mistake_text.value = "Mistakes: " + str(mistakes)
+        title.value = "Type Master"
+        title.size=40
         update_display()
     
     input_field = ft.TextField(
